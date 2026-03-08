@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SabakaLang</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pure-black:  #000000;
+            --deep-black:  #0A0A0A;
+            --dark-gray:   #1A1A1A;
+            --medium-gray: #2D2D2D;
+            --light-gray:  #404040;
+            --pure-white:  #FFFFFF;
+            --off-white:   #F5F5F5;
+            --light-white: #E8E8E8;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--deep-black);
+            color: var(--off-white);
+            font-family: 'Comfortaa', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ── SCROLLBAR ─────────────────────────────────────────── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--pure-black); }
+        ::-webkit-scrollbar-thumb { background: var(--light-gray); border-radius: 3px; }
+
+        /* ── NAV ───────────────────────────────────────────────── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 20px 60px;
+            background: rgba(10,10,10,0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .nav-logo {
+            font-family: 'Comfortaa', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--pure-white);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+
+        .nav-logo span {
+            color: var(--light-gray);
+            font-weight: 300;
+        }
+
+        .nav-links {
+            display: flex; gap: 36px; list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--light-white);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .nav-links a:hover { opacity: 1; }
+
+        .nav-cta {
+            background: var(--pure-white);
+            color: var(--pure-black) !important;
+            padding: 9px 22px;
+            border-radius: 100px;
+            opacity: 1 !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            transition: background 0.2s !important;
+        }
+        .nav-cta:hover { background: var(--light-white) !important; }
+
+        /* ── HERO ──────────────────────────────────────────────── */
+        .hero {
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 120px 60px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            position: absolute; inset: 0;
+            background-image:
+                    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 40%, transparent 100%);
+        }
+
+        .hero-glow {
+            position: absolute;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -60%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--dark-gray);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 100px;
+            padding: 6px 16px 6px 8px;
+            font-size: 12px;
+            color: var(--light-white);
+            margin-bottom: 36px;
+            animation: fadeUp 0.8s ease both;
+        }
+
+        .hero-badge-dot {
+            width: 6px; height: 6px;
+            background: var(--pure-white);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.3; }
+        }
+
+        .hero h1 {
+            font-size: clamp(52px, 9vw, 110px);
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: -3px;
+            color: var(--pure-white);
+            text-align: center;
+            animation: fadeUp 0.8s 0.1s ease both;
+        }
+
+        .hero h1 em {
+            font-style: normal;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+        }
+
+        .hero-sub {
+            max-width: 480px;
+            text-align: center;
+            font-size: 17px;
+            color: var(--light-white);
+            opacity: 0.6;
+            margin-top: 28px;
+            line-height: 1.7;
+            font-weight: 300;
+            animation: fadeUp 0.8s 0.2s ease both;
+        }
+
+        .hero-actions {
+            display: flex; gap: 14px; margin-top: 44px;
+            animation: fadeUp 0.8s 0.3s ease both;
+        }
+
+        .btn-primary {
+            background: var(--pure-white);
+            color: var(--pure-black);
+            padding: 14px 32px;
+            border-radius: 100px;
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .btn-primary:hover { transform: translateY(-2px); background: var(--off-white); }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--light-white);
+            padding: 14px 32px;
+            border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.15);
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .btn-secondary:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.35); }
+
+        /* ── CODE WINDOW ───────────────────────────────────────── */
+        .hero-code {
+            margin-top: 72px;
+            width: 100%; max-width: 680px;
+            background: var(--dark-gray);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            animation: fadeUp 0.8s 0.4s ease both;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+        }
+
+        .code-bar {
+            display: flex; align-items: center; gap: 8px;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .cd-r { background: #ff5f57; }
+        .cd-y { background: #ffbd2e; }
+        .cd-g { background: #28c840; }
+
+        .code-filename {
+            margin-left: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .code-body {
+            padding: 24px 28px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            overflow-x: auto;
+        }
+
+        .code-body .ln {
+            display: inline-block;
+            width: 28px;
+            color: rgba(255,255,255,0.15);
+            user-select: none;
+            font-size: 11px;
+        }
+
+        .kw  { color: #c9a7ff; }   /* keyword  */
+        .ty  { color: #7dd3fc; }   /* type     */
+        .fn  { color: #86efac; }   /* function */
+        .st  { color: #fca5a5; }   /* string   */
+        .nm  { color: #fdba74; }   /* number   */
+        .cm  { color: rgba(255,255,255,0.25); font-style: italic; }
+        .op  { color: rgba(255,255,255,0.5); }
+
+        /* ── STATS BAR ─────────────────────────────────────────── */
+        .stats {
+            display: flex; justify-content: center;
+            gap: 0;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .stat {
+            flex: 1; max-width: 240px;
+            padding: 36px 24px;
+            text-align: center;
+            border-right: 1px solid rgba(255,255,255,0.06);
+            transition: background 0.25s;
+        }
+        .stat:last-child { border-right: none; }
+        .stat:hover { background: rgba(255,255,255,0.02); }
+
+        .stat-num {
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--pure-white);
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 6px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── FEATURES ──────────────────────────────────────────── */
+        .section {
+            padding: 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.3);
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: clamp(32px, 4vw, 52px);
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            color: var(--pure-white);
+            line-height: 1.1;
+            margin-bottom: 60px;
+            max-width: 540px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .feature-card {
+            background: var(--deep-black);
+            padding: 40px 36px;
+            transition: background 0.25s;
+        }
+        .feature-card:hover { background: var(--dark-gray); }
+
+        .feature-icon {
+            width: 40px; height: 40px;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px;
+            font-size: 17px;
+        }
+
+        .feature-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--pure-white);
+            margin-bottom: 10px;
+            letter-spacing: -0.3px;
+        }
+
+        .feature-card p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* ── STDLIB ────────────────────────────────────────────── */
+        .stdlib-section {
+            background: var(--dark-gray);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .stdlib-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .stdlib-card {
+            background: var(--dark-gray);
+            padding: 28px 24px;
+            transition: background 0.2s;
+            cursor: default;
+        }
+        .stdlib-card:hover { background: var(--medium-gray); }
+
+        .stdlib-card-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--pure-white);
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .stdlib-card-desc {
+            font-size: 12px;
+            color: rgba(255,255,255,0.35);
+            font-weight: 300;
+        }
+
+        /* ── SABAKAUI ──────────────────────────────────────────── */
+        .ui-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .ui-preview {
+            background: var(--dark-gray);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .ui-preview-bar {
+            display: flex; align-items: center; gap: 8px;
+            padding: 12px 16px;
+            background: var(--medium-gray);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .ui-preview-body {
+            padding: 0;
+            aspect-ratio: 4/3;
+            display: flex; flex-direction: column;
+        }
+
+        .ui-mock-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+            display: flex; justify-content: space-between;
+        }
+
+        .ui-mock-display {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-end;
+            padding: 20px;
+            gap: 6px;
+        }
+
+        .ui-mock-expr {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .ui-mock-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 36px;
+            font-weight: 300;
+            color: var(--pure-white);
+        }
+
+        .ui-mock-btns {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 1px;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .ui-mock-btn {
+            padding: 14px;
+            text-align: center;
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .umb-clear  { background: #3a2020; color: #ff8080; }
+        .umb-op     { background: #202838; color: #80b4ff; }
+        .umb-num    { background: var(--medium-gray); color: var(--off-white); }
+        .umb-eq     { background: var(--light-gray); color: var(--pure-white); font-weight: 700; }
+
+        /* ── SAR ───────────────────────────────────────────────── */
+        .sar-section {
+            background: var(--pure-black);
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .sar-flow {
+            display: flex; align-items: center; gap: 0;
+            margin-top: 48px;
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sar-step {
+            flex: 1;
+            padding: 36px 32px;
+            background: var(--dark-gray);
+            border-right: 1px solid rgba(255,255,255,0.06);
+            position: relative;
+        }
+        .sar-step:last-child { border-right: none; }
+
+        .sar-step-num {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.2);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .sar-step-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--pure-white);
+            margin-bottom: 8px;
+        }
+
+        .sar-step-desc {
+            font-size: 13px;
+            color: rgba(255,255,255,0.4);
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .sar-arrow {
+            position: absolute; right: -1px; top: 50%;
+            transform: translateY(-50%);
+            width: 20px; height: 20px;
+            background: var(--dark-gray);
+            clip-path: polygon(0 0, 100% 50%, 0 100%);
+            border-right: none;
+            z-index: 2;
+            display: none;
+        }
+
+        /* ── FOOTER ────────────────────────────────────────────── */
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 48px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-logo {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--pure-white);
+        }
+
+        .footer-copy {
+            font-size: 13px;
+            color: rgba(255,255,255,0.25);
+            font-weight: 300;
+        }
+
+        .footer-links {
+            display: flex; gap: 28px; list-style: none;
+        }
+        .footer-links a {
+            color: rgba(255,255,255,0.35);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--off-white); }
+
+        /* ── ANIMATIONS ────────────────────────────────────────── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .reveal {
+            opacity: 0; transform: translateY(32px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1; transform: translateY(0);
+        }
+
+        /* ── RESPONSIVE ────────────────────────────────────────── */
+        @media (max-width: 900px) {
+            nav { padding: 16px 24px; }
+            .nav-links { display: none; }
+            .section { padding: 72px 24px; }
+            .hero { padding: 100px 24px 60px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .stdlib-grid { grid-template-columns: repeat(2,1fr); }
+            .ui-section { grid-template-columns: 1fr; }
+            .sar-flow { flex-direction: column; }
+            .sar-step { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); }
+            footer { flex-direction: column; gap: 20px; text-align: center; }
+            .stats { flex-wrap: wrap; }
+            .stat { min-width: 150px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <a class="nav-logo" href="#">Sabaka<span>Lang</span></a>
+    <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#stdlib">Stdlib</a></li>
+        <li><a href="#sabakaui">SabakaUI</a></li>
+        <li><a href="#sar">SAR</a></li>
+        <li><a href="https://github.com/sabaka-chabaka/SabakaLang/releases/latest" class="nav-cta">Download</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+
+    <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Now with SabakaUI · physics2d · SAR packaging
+    </div>
+
+    <h1>A language<br>that <em>bites</em></h1>
+
+    <p class="hero-sub">
+        SabakaLang is a compiled, statically-typed scripting language with its own VM,
+        rich stdlib, and native WPF UI bridge.
+    </p>
+
+    <div class="hero-actions">
+        <a href="#" class="btn-primary">Get Started</a>
+        <a href="#features" class="btn-secondary">Explore features →</a>
+    </div>
+
+    <div class="hero-code">
+        <div class="code-bar">
+            <div class="code-dot cd-r"></div>
+            <div class="code-dot cd-y"></div>
+            <div class="code-dot cd-g"></div>
+            <span class="code-filename">calc.sabaka</span>
+        </div>
+        <div class="code-body"><pre><span class="ln">1</span>  <span class="kw">import</span> <span class="st">"SabakaUI.dll"</span> <span class="kw">as</span> ui<span class="op">;</span>
+<span class="ln">2</span>
+<span class="ln">3</span>  ui<span class="op">.</span><span class="fn">title</span><span class="op">(</span><span class="st">"SabakaCalc"</span><span class="op">);</span>
+<span class="ln">4</span>  ui<span class="op">.</span><span class="fn">size</span><span class="op">(</span><span class="nm">400</span><span class="op">,</span> <span class="nm">620</span><span class="op">);</span>
+<span class="ln">5</span>  ui<span class="op">.</span><span class="fn">load</span><span class="op">(</span><span class="st">"index.html"</span><span class="op">);</span>
+<span class="ln">6</span>
+<span class="ln">7</span>  <span class="ty">void</span> <span class="fn">onCalc</span><span class="op">(</span><span class="ty">string</span> msg<span class="op">) {</span>
+<span class="ln">8</span>    <span class="ty">float</span> a <span class="op">=</span> <span class="fn">parseFloat</span><span class="op">(</span>msg<span class="op">);</span>
+<span class="ln">9</span>    <span class="ty">float</span> b <span class="op">=</span> <span class="fn">parseFloat</span><span class="op">(</span>msg<span class="op">);</span>
+<span class="ln">10</span>   ui<span class="op">.</span><span class="fn">set</span><span class="op">(</span><span class="st">"result"</span><span class="op">,</span> <span class="st">""</span> <span class="op">+</span> <span class="op">(</span>a <span class="op">+</span> b<span class="op">));</span>
+<span class="ln">11</span> <span class="op">}</span>
+<span class="ln">12</span>
+<span class="ln">13</span> ui<span class="op">.</span><span class="fn">on</span><span class="op">(</span><span class="st">"calc"</span><span class="op">,</span> <span class="st">"onCalc"</span><span class="op">);</span>
+<span class="ln">14</span> ui<span class="op">.</span><span class="fn">run</span><span class="op">();</span></pre></div>
+    </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+    <div class="stat reveal">
+        <div class="stat-num">50<span style="font-size:22px;opacity:0.5">+</span></div>
+        <div class="stat-label">Stdlib Functions</div>
+    </div>
+    <div class="stat reveal">
+        <div class="stat-num">12</div>
+        <div class="stat-label">Built-in Libraries</div>
+    </div>
+    <div class="stat reveal">
+        <div class="stat-num">.sar</div>
+        <div class="stat-label">Portable Bundles</div>
+    </div>
+    <div class="stat reveal">
+        <div class="stat-num">VM</div>
+        <div class="stat-label">Custom Bytecode VM</div>
+    </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+    <div class="section-label">Features</div>
+    <h2 class="section-title reveal">Everything you need. Nothing you don't.</h2>
+    <div class="features-grid reveal">
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Bytecode VM</h3>
+            <p>Compiles to a compact instruction set and runs on a custom stack-based virtual machine with fast execution.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>Static Typing</h3>
+            <p>int, float, bool, string, arrays, structs, classes — all resolved at compile time with full type inference.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📦</div>
+            <h3>Import System</h3>
+            <p>Import .sabaka files and native .dll modules with alias namespacing. Deduplication built in.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🎨</div>
+            <h3>SabakaUI</h3>
+            <p>Build native WPF windows with a WebView2 bridge. Send data between JS and SabakaLang in real time.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🌍</div>
+            <h3>Physics2D</h3>
+            <p>Rigid body simulation, AABB and circle colliders, impulse resolution — all in pure SabakaLang.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📐</div>
+            <h3>Canvas & Charts</h3>
+            <p>2D drawing API and chart rendering. Histograms, line charts, scatter plots — render to any surface.</p>
+        </div>
+    </div>
+</section>
+
+<!-- STDLIB -->
+<div class="stdlib-section">
+    <section class="section" id="stdlib">
+        <div class="section-label">Standard Library</div>
+        <h2 class="section-title reveal">Batteries included.</h2>
+        <div class="stdlib-grid reveal">
+            <div class="stdlib-card"><div class="stdlib-card-name">math.sabaka</div><div class="stdlib-card-desc">floor, sqrt, sin, cos, pow, abs, clamp</div></div>
+            <div class="stdlib-card"><div class="stdlib-card-name">string.sabaka</div><div class="stdlib-card-desc">split, trim, indexOf, replace, upper</div></div>
+            <div class="stdlib-card"><div class="stdlib-card-name">canvas.sabaka</div><div class="stdlib-card-desc">2D drawing · lines · rects · text</div></div>
+            <div class="stdlib-card"><div class="stdlib-card-name">chart.sabaka</div><div class="stdlib-card-desc">histogram · line · scatter · bar</div></div>
+            <div class="stdlib-card"><div class="stdlib-card-name">physics2d.sabaka</div><div class="stdlib-card-desc">bodies · colliders · impulse solver</div></div>
+            <div class="stdlib-card"><div class="stdlib-card-name">stats.sabaka</div><div class="stdlib-card-desc">mean · variance · stddev · median</div></div>
+            <div class="stdlib-card"><div class="stdlib-card-name">hash.sabaka</div><div class="stdlib-card-desc">djb2 · FNV-1a · SHA-256 · HMAC</div></div>
+            <div class="stdlib-card"><div class="stdlib-card-name">graph.sabaka</div><div class="stdlib-card-desc">BFS · DFS · Dijkstra · adjacency</div></div>
+            <div class="stdlib-card"><div class="stdlib-card-name">heap.sabaka</div><div class="stdlib-card-desc">min/max heap · insert · extract</div></div>
+            <div class="stdlib-card"><div class="stdlib-card-name">trie.sabaka</div><div class="stdlib-card-desc">insert · search · prefix match</div></div>
+            <div class="stdlib-card"><div class="stdlib-card-name">csv.sabaka</div><div class="stdlib-card-desc">parse · format · quoted fields</div></div>
+            <div class="stdlib-card"><div class="stdlib-card-name">xml.sabaka</div><div class="stdlib-card-desc">tokenize · tree build · query</div></div>
+        </div>
+    </section>
+</div>
+
+<!-- SABAKAUI -->
+<section class="section" id="sabakaui">
+    <div class="ui-section">
+        <div>
+            <div class="section-label">SabakaUI</div>
+            <h2 class="section-title reveal" style="margin-bottom:20px">Native UI.<br>Zero boilerplate.</h2>
+            <p class="reveal" style="color:rgba(255,255,255,0.45);font-size:15px;line-height:1.8;font-weight:300;max-width:400px">
+                SabakaUI wraps WPF and WebView2 into a two-line API.
+                Write your interface in HTML/CSS/JS,
+                then wire it to SabakaLang logic with <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--dark-gray);padding:2px 7px;border-radius:4px">ui.on()</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--dark-gray);padding:2px 7px;border-radius:4px">ui.set()</code>.
+            </p>
+            <div class="reveal" style="margin-top:32px;display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                    <div style="width:5px;height:5px;border-radius:50%;background:var(--pure-white);opacity:0.4;margin-top:8px;flex-shrink:0"></div>
+                    <span style="font-size:14px;color:rgba(255,255,255,0.5);font-weight:300">JS → SabakaLang via <code style="font-family:'JetBrains Mono',monospace;font-size:12px">sabaka.send(event, data)</code></span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                    <div style="width:5px;height:5px;border-radius:50%;background:var(--pure-white);opacity:0.4;margin-top:8px;flex-shrink:0"></div>
+                    <span style="font-size:14px;color:rgba(255,255,255,0.5);font-weight:300">SabakaLang → JS via <code style="font-family:'JetBrains Mono',monospace;font-size:12px">ui.set(key, value)</code></span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                    <div style="width:5px;height:5px;border-radius:50%;background:var(--pure-white);opacity:0.4;margin-top:8px;flex-shrink:0"></div>
+                    <span style="font-size:14px;color:rgba(255,255,255,0.5);font-weight:300">WPF window with full DPI & resize support</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui-preview reveal">
+            <div class="ui-preview-bar">
+                <div class="code-dot cd-r"></div>
+                <div class="code-dot cd-y"></div>
+                <div class="code-dot cd-g"></div>
+                <span class="code-filename" style="margin-left:auto;margin-right:auto">SabakaCalc</span>
+            </div>
+            <div class="ui-preview-body">
+                <div class="ui-mock-display">
+                    <div class="ui-mock-expr">5 + 5</div>
+                    <div class="ui-mock-val">10</div>
+                </div>
+                <div class="ui-mock-btns">
+                    <div class="ui-mock-btn umb-clear">AC</div>
+                    <div class="ui-mock-btn umb-op">±</div>
+                    <div class="ui-mock-btn umb-op">%</div>
+                    <div class="ui-mock-btn umb-op">÷</div>
+                    <div class="ui-mock-btn umb-num">7</div>
+                    <div class="ui-mock-btn umb-num">8</div>
+                    <div class="ui-mock-btn umb-num">9</div>
+                    <div class="ui-mock-btn umb-op">×</div>
+                    <div class="ui-mock-btn umb-num">4</div>
+                    <div class="ui-mock-btn umb-num">5</div>
+                    <div class="ui-mock-btn umb-num">6</div>
+                    <div class="ui-mock-btn umb-op">−</div>
+                    <div class="ui-mock-btn umb-num">1</div>
+                    <div class="ui-mock-btn umb-num">2</div>
+                    <div class="ui-mock-btn umb-num">3</div>
+                    <div class="ui-mock-btn umb-op">+</div>
+                    <div class="ui-mock-btn umb-num" style="grid-column:span 2">0</div>
+                    <div class="ui-mock-btn umb-num">.</div>
+                    <div class="ui-mock-btn umb-eq">=</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SAR -->
+<div class="sar-section">
+    <section class="section" id="sar">
+        <div class="section-label">SAR Packaging</div>
+        <h2 class="section-title reveal">Ship as a single file.</h2>
+        <div class="sar-flow reveal">
+            <div class="sar-step">
+                <div class="sar-step-num">01 — Write</div>
+                <div class="sar-step-title">Source + manifest</div>
+                <div class="sar-step-desc">Write your <code style="font-family:'JetBrains Mono',monospace;font-size:12px">.sabaka</code> files and a <code style="font-family:'JetBrains Mono',monospace;font-size:12px">manifest.json</code> declaring your entry point and DLL dependencies with aliases.</div>
+            </div>
+            <div class="sar-step">
+                <div class="sar-step-num">02 — Pack</div>
+                <div class="sar-step-title">SarPacker</div>
+                <div class="sar-step-desc">SarPacker compiles to bytecode, resolves all DLL dependencies, and bundles assets, DLLs, and bytecode into a single <code style="font-family:'JetBrains Mono',monospace;font-size:12px">.sar</code> ZIP archive.</div>
+            </div>
+            <div class="sar-step">
+                <div class="sar-step-num">03 — Run</div>
+                <div class="sar-step-title">RuntimeEnvironment</div>
+                <div class="sar-step-desc">SRE extracts the archive to a temp folder, loads DLLs with correct aliases, wires callbacks, and executes the bytecode on the VM.</div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-logo">SabakaLang</div>
+    <ul class="footer-links">
+        <li><a href="https://github.com/sabaka-chabaka/SabakaLang">GitHub</a></li>
+    </ul>
+    <div class="footer-copy">Built with SabakaLang · SabakaUI</div>
+</footer>
+
+<script>
+    // Scroll reveal
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                observer.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Stagger children of grids
+    document.querySelectorAll('.features-grid, .stdlib-grid, .sar-flow').forEach(grid => {
+        [...grid.children].forEach((child, i) => {
+            child.style.transitionDelay = `${i * 60}ms`;
+        });
+    });
+</script>
+</body>
+</html>
